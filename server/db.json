@@ -37,8 +37,120 @@
       "role": "manager"
     }
   ],
-  "staff": [],
+  "staff": [
+    {
+      "id": "28e3",
+      "name": "JASKARAN",
+      "role": "Kitchen"
+    }
+  ],
   "reports": [],
-  "orders": [],
-  "inventory": []
+  "orders": [
+    {
+      "id": "a753",
+      "orderId": "QB-102906",
+      "customerName": "abc",
+      "customerPhone": "1234567890",
+      "items": [
+        {
+          "id": 7,
+          "name": "Brownie",
+          "details": "Piece",
+          "category": "Snacks & Munchies",
+          "price": 80,
+          "qty": 4
+        }
+      ],
+      "total": 320,
+      "status": "Saved",
+      "time": "2025-10-26T16:45:02.906Z"
+    },
+    {
+      "id": "7de5",
+      "orderId": "QB-363142",
+      "customerName": "big",
+      "customerPhone": "1234567890",
+      "items": [
+        {
+          "id": 9,
+          "name": "Banana Muffin",
+          "details": "Piece",
+          "category": "Snacks & Munchies",
+          "price": 85,
+          "qty": 1
+        }
+      ],
+      "total": 85,
+      "time": "2025-10-26T16:49:23.142Z",
+      "status": "Saved",
+      "method": "Unpaid"
+    }
+  ],
+  "inventory": [],
+  "menu": [
+    {
+      "id": 1,
+      "name": "Espresso",
+      "details": "Single shot, 30ml",
+      "category": "Coffee & Beverages",
+      "price": 80
+    },
+    {
+      "id": 2,
+      "name": "Latte",
+      "details": "120ml",
+      "category": "Coffee & Beverages",
+      "price": 120
+    },
+    {
+      "id": 3,
+      "name": "Mocha",
+      "details": "200ml",
+      "category": "Coffee & Beverages",
+      "price": 140
+    },
+    {
+      "id": 4,
+      "name": "Cold Brew",
+      "details": "300ml",
+      "category": "Coffee & Beverages",
+      "price": 150
+    },
+    {
+      "id": 5,
+      "name": "Iced Coffee",
+      "details": "250ml",
+      "category": "Coffee & Beverages",
+      "price": 130
+    },
+    {
+      "id": 6,
+      "name": "Choco Chip Cookies",
+      "details": "Pack of 4",
+      "category": "Snacks & Munchies",
+      "price": 80
+    },
+    {
+      "id": 7,
+      "name": "Brownie",
+      "details": "Piece",
+      "category": "Snacks & Munchies",
+      "price": 80
+    },
+    {
+      "id": 8,
+      "name": "Veg Sandwich",
+      "details": "Single",
+      "category": "Snacks & Munchies",
+      "price": 90
+    },
+    {
+      "id": 9,
+      "name": "Banana Muffin",
+      "details": "Piece",
+      "category": "Snacks & Munchies",
+      "price": 85
+    }
+  ],
+  "sales": []
 }

@@ -2,193 +2,208 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Cafe QuickBite - Cashier POS</title>
+  <title>QuickBite Cafe - Cashier Panel</title>
   <link rel="stylesheet" href="../styles/styles.css" />
   <style>
-    body { background: #f7f7f7; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; }
-    .pos-header {
+    body {
+      background: #f7f7f7;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+    }
+    .cashier-header {
       padding: 18px 40px;
       background: #fff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #e9e9e9;
       font-size: 2rem;
       font-weight: bold;
+      border-bottom: 1px solid #e9e9e9;
     }
-    .pos-header .highlight { color: #8bc34a; }
-    .pos-container {
-      max-width: 900px;
+    .cashier-header .highlight {
+      color: #8bc34a;
+    }
+    .cashier-container {
+      max-width: 1000px;
       margin: 40px auto;
-      display: flex;
-      gap: 24px;
-    }
-    .pos-menu, .pos-bill {
       background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 1px 8px rgba(80,80,80,.05);
-      padding: 26px;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 1px 12px rgba(80,80,80,0.05);
     }
-    .pos-menu { width: 45%; }
-    .pos-bill { width: 55%; }
-    .menu-list { display: flex; flex-wrap: wrap; gap: 13px; }
-    .menu-item {
-      background: #f3fbe7;
-      border-radius: 10px;
-      padding: 13px;
-      text-align: center;
-      width: 115px;
-      cursor: pointer;
-      border: 1px solid #e7f5ce;
+    h2 {
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #333;
     }
-    .item-name { font-weight: 600; color: #3b3b3b; font-size: 1rem; }
-    .item-price { font-weight: bold; color: #6d9c23; }
-    .bill-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-    .bill-table th, .bill-table td {
-      padding: 8px 6px;
-      text-align: center;
+    table {
+      width: 100%;
+      border-collapse: collapse;
       font-size: 1rem;
     }
-    .bill-table th { background: #f3fbe7; color: #79a144; }
-    .bill-table td:last-child { color: #c23519; }
-    .actions-btn {
-      background: #8bc34a;
-      color: #fff;
-      border: none;
-      border-radius: 7px;
-      padding: 4px 12px;
-      font-weight: 500;
-      font-size: 0.98rem;
-      cursor: pointer;
-      margin: 2px;
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px 12px;
+      text-align: center;
     }
-    .payment-btn {
-      padding: 10px 18px;
-      margin-top: 14px;
-      border-radius: 7px;
-      border: none;
+    th {
+      background: #f3fbe7;
+      color: #79a144;
+    }
+    .status-paid {
+      color: #4caf50;
+      font-weight: bold;
+    }
+    .status-unpaid {
+      color: #e65100;
+      font-weight: bold;
+    }
+    .payment-form {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+    .payment-form select {
+      padding: 6px;
+      border-radius: 6px;
       font-weight: 600;
-      font-size: 1.07rem;
-      color: #fff;
-      background: #79a144;
+    }
+    .payment-form button {
+      background: #8bc34a;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: 600;
       cursor: pointer;
     }
-    .grand-total { font-size: 1.6rem; font-weight: bold; color: #8bc34a; }
+    .payment-form button:hover {
+      background: #689f38;
+    }
   </style>
 </head>
 <body>
-  <div class="pos-header">
+  <div class="cashier-header">
     QuickBite <span class="highlight">Cafe</span> Cashier
   </div>
 
-  <div class="pos-container">
-    <div class="pos-menu">
-      <h2>Menu</h2>
-      <div class="menu-list" id="menuList"></div>
-    </div>
-
-    <div class="pos-bill">
-      <h2>Current Bill</h2>
-      <table class="bill-table" id="billTable">
-        <thead>
-          <tr><th>Item</th><th>Qty</th><th>Price</th><th>Remove</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <div style="margin-top: 20px;">
-        <label>Discount: <input type="number" id="discount" value="0" min="0" max="100"> %</label>
-        <div>Total: ₹<span id="totalAmount">0</span></div>
-        <div>Grand Total: ₹<span class="grand-total" id="grandTotal">0</span></div>
-        <button class="payment-btn" onclick="processPayment('Cash')">Process Cash</button>
-        <button class="payment-btn" onclick="processPayment('Card')">Process Card</button>
-      </div>
-    </div>
+  <div class="cashier-container">
+    <h2>Customer Orders</h2>
+    <table id="orderTable">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Phone</th>
+          <th>Items</th>
+          <th>Total</th>
+          <th>GST (5%)</th>
+          <th>Grand Total</th>
+          <th>Status</th>
+          <th>Payment</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
 
   <script>
-    const menuApi = 'http://localhost:3000/menu';
     const orderApi = 'http://localhost:3000/orders';
-    let menuItems = [];
-    let bill = [];
+    const salesApi = 'http://localhost:3000/sales';
+    let orders = [];
 
-    async function fetchMenu() {
-      const res = await fetch(menuApi);
-      menuItems = await res.json();
-      renderMenu();
+    async function fetchOrders() {
+      const res = await fetch(orderApi);
+      orders = await res.json();
+      renderOrders();
     }
 
-    function renderMenu() {
-      const menuListDiv = document.getElementById('menuList');
-      menuListDiv.innerHTML = '';
-      menuItems.forEach((item, i) => {
-        const div = document.createElement('div');
-        div.className = 'menu-item';
-        div.innerHTML = `
-          <div class="item-name">${item.name}</div>
-          <div class="item-price">₹${item.price}</div>
-          <button class="actions-btn" onclick="addToBill(${i})">Add</button>
-        `;
-        menuListDiv.appendChild(div);
-      });
-    }
-
-    window.addToBill = function(idx) {
-      const found = bill.find(x => x.name === menuItems[idx].name);
-      if (found) found.qty += 1;
-      else bill.push({ ...menuItems[idx], qty: 1 });
-      renderBill();
-    };
-
-    window.removeFromBill = function(idx) {
-      bill.splice(idx, 1);
-      renderBill();
-    };
-
-    function renderBill() {
-      const tbody = document.getElementById('billTable').querySelector('tbody');
+    function renderOrders() {
+      const tbody = document.querySelector('#orderTable tbody');
       tbody.innerHTML = '';
-      bill.forEach((item, i) => {
-        const row = tbody.insertRow();
-        row.insertCell(0).innerText = item.name;
-        row.insertCell(1).innerText = item.qty;
-        row.insertCell(2).innerText = '₹' + (item.price * item.qty);
-        row.insertCell(3).innerHTML = `<button class="actions-btn" onclick="removeFromBill(${i})">X</button>`;
+      orders.forEach(order => {
+        const itemsList = order.items.map(i => `${i.name} x${i.qty}`).join(', ');
+        const gst = Math.round(order.total * 0.05);
+        const grandTotal = order.total + gst;
+        const statusClass = order.method === 'Paid' ? 'status-paid' : 'status-unpaid';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${order.orderId}</td>
+          <td>${order.customerName}</td>
+          <td>${order.customerPhone}</td>
+          <td>${itemsList}</td>
+          <td>₹${order.total}</td>
+          <td>₹${gst}</td>
+          <td>₹${grandTotal}</td>
+          <td class="${statusClass}">${order.method || 'Unpaid'}</td>
+          <td>
+            ${order.method === 'Paid'
+              ? '—'
+              : `
+                <div class="payment-form">
+                  <select id="payMethod${order.id}">
+                    <option value="Cash">Cash</option>
+                    <option value="Card">Card</option>
+                    <option value="UPI">UPI</option>
+                  </select>
+                  <button onclick="processPayment(${order.id}, ${gst}, ${grandTotal})">Pay</button>
+                </div>
+              `}
+          </td>
+        `;
+        tbody.appendChild(tr);
       });
-      updateTotals();
     }
 
-    function updateTotals() {
-      const total = bill.reduce((sum, i) => sum + (i.price * i.qty), 0);
-      document.getElementById('totalAmount').innerText = total;
-      const discount = parseFloat(document.getElementById('discount').value || 0);
-      const discounted = total - (total * discount / 100);
-      document.getElementById('grandTotal').innerText = Math.round(discounted);
-    }
+    async function processPayment(orderId, gst, grandTotal) {
+      const method = document.getElementById(`payMethod${orderId}`).value;
+      const order = orders.find(o => o.id === orderId);
+      if (!order) return;
 
-    document.getElementById('discount').addEventListener('input', updateTotals);
+      await fetch(`${orderApi}/${orderId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ method: 'Paid', status: 'Completed' })
+      });
 
-    window.processPayment = async function(method) {
-      if (bill.length === 0) return alert('No items in the bill!');
-      const total = document.getElementById('grandTotal').innerText;
-      await fetch(orderApi, {
+      const saleData = {
+        orderId: order.orderId,
+        customerName: order.customerName,
+        customerPhone: order.customerPhone,
+        items: order.items,
+        baseTotal: order.total,
+        gst,
+        grandTotal,
+        paymentMethod: method,
+        time: new Date().toISOString()
+      };
+
+      await fetch(salesApi, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items: bill,
-          total: parseInt(total),
-          method,
-          time: new Date().toISOString()
-        })
+        body: JSON.stringify(saleData)
       });
-      alert(`Payment of ₹${total} processed by ${method}!`);
-      bill = [];
-      renderBill();
-      document.getElementById('discount').value = 0;
-      updateTotals();
-    };
 
-    fetchMenu();
-    renderBill();
+      const billWindow = window.open('', '', 'width=600,height=600');
+      billWindow.document.write(`
+  <html>
+    <head><title>QuickBite Bill</title></head>
+    <body onload="window.print()">
+      <h2>QuickBite Cafe - Bill</h2>
+      <p><strong>Order ID:</strong> ${order.orderId}</p>
+      <p><strong>Customer:</strong> ${order.customerName}</p>
+      <p><strong>Phone:</strong> ${order.customerPhone}</p>
+      <p><strong>Items:</strong> ${order.items.map(i => `${i.name} x${i.qty}`).join(', ')}</p>
+      <p><strong>Base Total:</strong> ₹${order.total}</p>
+      <p><strong>GST (5%):</strong> ₹${gst}</p>
+      <p><strong>Grand Total:</strong> ₹${grandTotal}</p>
+      <p><strong>Payment Method:</strong> ${method}</p>
+      <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
+      <hr><p>Thank you for dining with us!</p>
+    </body>
+  </html>
+`);
+billWindow.document.close();
+setTimeout(fetchOrders, 1000);
   </script>
 </body>
 </html>
