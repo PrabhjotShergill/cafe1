@@ -28,41 +28,40 @@
   </main>
 
   <script>
-    const beverages = [
-      { name: "Espresso", details: "Single shot, 30ml", price: 80, img: "espresso.jpg" },
-      { name: "Latte", details: "200ml", price: 120, img: "latte.jpg" },
-      { name: "Mocha", details: "200ml", price: 140, img: "mocha.jpg" },
-      { name: "Cold Brew", details: "300ml", price: 150, img: "coldbrew.jpg" },
-      { name: "Iced Coffee", details: "250ml", price: 130, img: "icedcoffee.jpg" }
-    ];
+    async function fetchmenu() {
+      try {
+        const response = await fetch('http://localhost:3000/menu');
+        const items = await response.json();
 
-    const snacks = [
-      { name: "Choco Chip Cookies", details: "Pack of 4", price: 100, img: "cookie.jpg" },
-      { name: "Brownie", details: "Piece", price: 80, img: "brownie.jpg" },
-      { name: "Veg Sandwich", details: "Single", price: 90, img: "sandwich.jpg" },
-      { name: "Banana Muffin", details: "Piece", price: 85, img: "muffin.jpg" }
-    ];
+        const beverages = items.filter(item => item.category === 'Coffee & Beverages');
+        const snacks = items.filter(item => item.category === 'Snacks & Munchies');
+
+        renderItems(beverages, 'beverageList');
+        renderItems(snacks, 'snackList');
+      } catch (error) {
+        console.error('Error fetching menu:', error);
+      }
+    }
 
     function renderItems(list, containerId) {
       const container = document.getElementById(containerId);
+      container.innerHTML = '';
       list.forEach(item => {
         const div = document.createElement('div');
         div.className = 'item-card';
         div.innerHTML = `
-          <img src="../images/${item.img}" alt="${item.name}" />
+          <img src="../images/${item.name.toLowerCase().replace(/\s+/g, '')}.jpg" alt="${item.name}" />
           <div class="item-name">${item.name}</div>
           <div class="item-details">${item.details}</div>
           <div class="item-footer">
             <span class="item-price">₹${item.price}</span>
-            <button class="add-btn">ADD</button>
           </div>
         `;
         container.appendChild(div);
       });
     }
 
-    renderItems(beverages, 'beverageList');
-    renderItems(snacks, 'snackList');
+    fetchmenu();
   </script>
 </body>
 </html>
