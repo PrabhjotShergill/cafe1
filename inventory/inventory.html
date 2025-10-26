@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cafe QuickBite - Inventory Staff</title>
+  <link rel="stylesheet" href="../styles/styles.css" />
+  <style>
+    body { background: #f7f7f7; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; }
+    .inventory-header {
+      padding: 18px 40px;
+      background: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e9e9e9;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    .inventory-header .highlight { color: #8bc34a; }
+    .inventory-container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px 32px;
+      box-shadow: 0 1px 12px rgba(80,80,80,0.05);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1rem;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 12px 10px;
+      text-align: center;
+    }
+    th {
+      background: #f3fbe7;
+      color: #79a144;
+    }
+    input.stock-input {
+      width: 70px;
+      padding: 6px 8px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #aaa;
+      text-align: center;
+    }
+    button {
+      background: #8bc34a;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 7px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover {
+      background: #689f38;
+    }
+    .btn-row {
+      margin-top: 25px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header class="inventory-header">
+    Cafe QuickBite <span class="highlight">Inventory</span> Staff
+  </header>
+
+  <div class="inventory-container">
+    <h2>Inventory Stock</h2>
+    <table id="inventoryTable">
+      <thead>
+        <tr><th>Item</th><th>Stock Quantity</th><th>Update Stock</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="btn-row">
+      <button onclick="updateStock()">Update Stock</button>
+      <button onclick="notifyManager()">Notify Manager</button>
+    </div>
+  </div>
+
+  <script>
+    const inventoryApi = 'http://localhost:3000/inventory';
+    let inventory = [];
+
+    async function fetchInventory() {
+      const res = await fetch(inventoryApi);
+      inventory = await res.json();
+      renderInventory();
+    }
+
+    function renderInventory() {
+      const tbody = document.querySelector('#inventoryTable tbody');
+      tbody.innerHTML = '';
+      inventory.forEach((item, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.stock}</td>
+          <td>
+            <input type="number" min="0" value="${item.stock}" class="stock-input" id="stockInput${item.id}" />
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function updateStock() {
+      for (let item of inventory) {
+        const input = document.getElementById(`stockInput${item.id}`);
+        const newVal = parseInt(input.value);
+        if (isNaN(newVal) || newVal < 0) {
+          alert(`Invalid stock for ${item.name}`);
+          return;
+        }
+        await fetch(`${inventoryApi}/${item.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ stock: newVal })
+        });
+      }
+      alert('Stock updated successfully!');
+      fetchInventory();
+    }
+
+    function notifyManager() {
+      const lowStock = inventory.filter(i => i.stock < 10);
+      if (lowStock.length === 0) {
+        alert('All stock levels are sufficient.');
+      } else {
+        const msg = 'Low stock alert for:\n' + lowStock.map(i => `- ${i.name}: ${i.stock}`).join('\n');
+        alert(msg);
+      }
+    }
+
+    fetchInventory();
+  </script>
+</body>
+</html>

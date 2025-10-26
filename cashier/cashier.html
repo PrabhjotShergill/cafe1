@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cafe QuickBite - Cashier POS</title>
+  <link rel="stylesheet" href="../styles/styles.css" />
+  <style>
+    body { background: #f7f7f7; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; }
+    .pos-header {
+      padding: 18px 40px;
+      background: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e9e9e9;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    .pos-header .highlight { color: #8bc34a; }
+    .pos-container {
+      max-width: 900px;
+      margin: 40px auto;
+      display: flex;
+      gap: 24px;
+    }
+    .pos-menu, .pos-bill {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 1px 8px rgba(80,80,80,.05);
+      padding: 26px;
+    }
+    .pos-menu { width: 45%; }
+    .pos-bill { width: 55%; }
+    .menu-list { display: flex; flex-wrap: wrap; gap: 13px; }
+    .menu-item {
+      background: #f3fbe7;
+      border-radius: 10px;
+      padding: 13px;
+      text-align: center;
+      width: 115px;
+      cursor: pointer;
+      border: 1px solid #e7f5ce;
+    }
+    .item-name { font-weight: 600; color: #3b3b3b; font-size: 1rem; }
+    .item-price { font-weight: bold; color: #6d9c23; }
+    .bill-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    .bill-table th, .bill-table td {
+      padding: 8px 6px;
+      text-align: center;
+      font-size: 1rem;
+    }
+    .bill-table th { background: #f3fbe7; color: #79a144; }
+    .bill-table td:last-child { color: #c23519; }
+    .actions-btn {
+      background: #8bc34a;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 4px 12px;
+      font-weight: 500;
+      font-size: 0.98rem;
+      cursor: pointer;
+      margin: 2px;
+    }
+    .payment-btn {
+      padding: 10px 18px;
+      margin-top: 14px;
+      border-radius: 7px;
+      border: none;
+      font-weight: 600;
+      font-size: 1.07rem;
+      color: #fff;
+      background: #79a144;
+      cursor: pointer;
+    }
+    .grand-total { font-size: 1.6rem; font-weight: bold; color: #8bc34a; }
+  </style>
+</head>
+<body>
+  <div class="pos-header">
+    QuickBite <span class="highlight">Cafe</span> Cashier
+  </div>
+
+  <div class="pos-container">
+    <div class="pos-menu">
+      <h2>Menu</h2>
+      <div class="menu-list" id="menuList"></div>
+    </div>
+
+    <div class="pos-bill">
+      <h2>Current Bill</h2>
+      <table class="bill-table" id="billTable">
+        <thead>
+          <tr><th>Item</th><th>Qty</th><th>Price</th><th>Remove</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div style="margin-top: 20px;">
+        <label>Discount: <input type="number" id="discount" value="0" min="0" max="100"> %</label>
+        <div>Total: ₹<span id="totalAmount">0</span></div>
+        <div>Grand Total: ₹<span class="grand-total" id="grandTotal">0</span></div>
+        <button class="payment-btn" onclick="processPayment('Cash')">Process Cash</button>
+        <button class="payment-btn" onclick="processPayment('Card')">Process Card</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const menuApi = 'http://localhost:3000/menu';
+    const orderApi = 'http://localhost:3000/orders';
+    let menuItems = [];
+    let bill = [];
+
+    async function fetchMenu() {
+      const res = await fetch(menuApi);
+      menuItems = await res.json();
+      renderMenu();
+    }
+
+    function renderMenu() {
+      const menuListDiv = document.getElementById('menuList');
+      menuListDiv.innerHTML = '';
+      menuItems.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = 'menu-item';
+        div.innerHTML = `
+          <div class="item-name">${item.name}</div>
+          <div class="item-price">₹${item.price}</div>
+          <button class="actions-btn" onclick="addToBill(${i})">Add</button>
+        `;
+        menuListDiv.appendChild(div);
+      });
+    }
+
+    window.addToBill = function(idx) {
+      const found = bill.find(x => x.name === menuItems[idx].name);
+      if (found) found.qty += 1;
+      else bill.push({ ...menuItems[idx], qty: 1 });
+      renderBill();
+    };
+
+    window.removeFromBill = function(idx) {
+      bill.splice(idx, 1);
+      renderBill();
+    };
+
+    function renderBill() {
+      const tbody = document.getElementById('billTable').querySelector('tbody');
+      tbody.innerHTML = '';
+      bill.forEach((item, i) => {
+        const row = tbody.insertRow();
+        row.insertCell(0).innerText = item.name;
+        row.insertCell(1).innerText = item.qty;
+        row.insertCell(2).innerText = '₹' + (item.price * item.qty);
+        row.insertCell(3).innerHTML = `<button class="actions-btn" onclick="removeFromBill(${i})">X</button>`;
+      });
+      updateTotals();
+    }
+
+    function updateTotals() {
+      const total = bill.reduce((sum, i) => sum + (i.price * i.qty), 0);
+      document.getElementById('totalAmount').innerText = total;
+      const discount = parseFloat(document.getElementById('discount').value || 0);
+      const discounted = total - (total * discount / 100);
+      document.getElementById('grandTotal').innerText = Math.round(discounted);
+    }
+
+    document.getElementById('discount').addEventListener('input', updateTotals);
+
+    window.processPayment = async function(method) {
+      if (bill.length === 0) return alert('No items in the bill!');
+      const total = document.getElementById('grandTotal').innerText;
+      await fetch(orderApi, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: bill,
+          total: parseInt(total),
+          method,
+          time: new Date().toISOString()
+        })
+      });
+      alert(`Payment of ₹${total} processed by ${method}!`);
+      bill = [];
+      renderBill();
+      document.getElementById('discount').value = 0;
+      updateTotals();
+    };
+
+    fetchMenu();
+    renderBill();
+  </script>
+</body>
+</html>

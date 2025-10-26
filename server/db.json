@@ -1,0 +1,44 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "username": "admin1",
+      "password": "pass123",
+      "role": "admin"
+    },
+    {
+      "id": "2",
+      "username": "cashier1",
+      "password": "pass123",
+      "role": "cashier"
+    },
+    {
+      "id": "3",
+      "username": "waiter1",
+      "password": "pass123",
+      "role": "waiter"
+    },
+    {
+      "id": "4",
+      "username": "kitchen1",
+      "password": "pass123",
+      "role": "kitchen"
+    },
+    {
+      "id": "5",
+      "username": "inventory1",
+      "password": "pass123",
+      "role": "inventory"
+    },
+    {
+      "id": "6",
+      "username": "manager1",
+      "password": "pass123",
+      "role": "manager"
+    }
+  ],
+  "staff": [],
+  "reports": [],
+  "orders": [],
+  "inventory": []
+}

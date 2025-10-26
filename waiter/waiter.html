@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cafe QuickBite - Waiter Panel</title>
+  <link rel="stylesheet" href="../styles/styles.css" />
+  <style>
+    body { background: #f7f7f7; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; }
+    .waiter-header {
+      padding: 18px 40px;
+      background: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e9e9e9;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    .waiter-header .highlight { color: #8bc34a; }
+    .waiter-container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 1px 12px rgba(80,80,80,0.05);
+    }
+    .menu-list { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 20px; }
+    .menu-item {
+      background: #f3fbe7;
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      width: 115px;
+      cursor: pointer;
+      border: 1px solid #e7f5ce;
+    }
+    .item-name { font-weight: 600; color: #3b3b3b; font-size: 1rem; }
+    .order-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    .order-table th, .order-table td {
+      padding: 8px 6px;
+      text-align: center;
+      font-size: 1rem;
+    }
+    .order-table th { background: #f3fbe7; color: #79a144; }
+    .order-actions-btn, .serve-btn, .deliver-btn {
+      background: #8bc34a;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 6px 13px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      margin: 3px 5px 3px 0;
+    }
+    .order-status {
+      font-weight: bold;
+      font-size: 1.03rem;
+      color: #ff9e10;
+    }
+    .order-status.served { color: #4caf50; }
+    .order-status.delivered { color: #0088ad; }
+  </style>
+</head>
+<body>
+  <div class="waiter-header">
+    QuickBite <span class="highlight">Cafe</span> Waiter
+  </div>
+
+  <div class="waiter-container">
+    <h2>Take Order</h2>
+    <div class="menu-list" id="menuList"></div>
+
+    <table class="order-table" id="orderTable">
+      <thead><tr><th>Item</th><th>Qty</th><th>Remove</th></tr></thead>
+      <tbody></tbody>
+    </table>
+
+    <div style="margin:20px 0;">
+      <button class="order-actions-btn" onclick="validateOrder()">Validate Order</button>
+      <button class="serve-btn" onclick="serveOrder()" disabled id="serveBtn">Serve Order</button>
+      <button class="deliver-btn" onclick="deliverOrder()" disabled id="deliverBtn">Confirm Delivery</button>
+      <span id="orderStatus" class="order-status"></span>
+    </div>
+  </div>
+
+  <script>
+    const menuApi = 'http://localhost:3000/menu';
+    const orderApi = 'http://localhost:3000/orders';
+    let menuItems = [], order = [];
+    let validated = false, served = false, delivered = false;
+
+    async function fetchMenu() {
+      const res = await fetch(menuApi);
+      menuItems = await res.json();
+      renderMenu();
+    }
+
+    function renderMenu() {
+      const menuListDiv = document.getElementById('menuList');
+      menuListDiv.innerHTML = '';
+      menuItems.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'menu-item';
+        div.innerHTML = `
+          <div class="item-name">${item.name}</div>
+          <button class="order-actions-btn" onclick="addToOrder(${idx})">Add</button>
+        `;
+        menuListDiv.appendChild(div);
+      });
+    }
+
+    window.addToOrder = function(idx) {
+      const found = order.find(x => x.name === menuItems[idx].name);
+      if (found) found.qty += 1;
+      else order.push({ ...menuItems[idx], qty: 1 });
+      validated = served = delivered = false;
+      renderOrder();
+      document.getElementById("serveBtn").disabled = true;
+      document.getElementById("deliverBtn").disabled = true;
+      updateStatus("");
+    };
+
+    window.removeFromOrder = function(idx) {
+      order.splice(idx, 1);
+      validated = served = delivered = false;
+      renderOrder();
+      document.getElementById("serveBtn").disabled = true;
+      document.getElementById("deliverBtn").disabled = true;
+      updateStatus("");
+    };
+
+    function renderOrder() {
+      const tbody = document.getElementById('orderTable').querySelector('tbody');
+      tbody.innerHTML = '';
+      order.forEach((item, i) => {
+        const row = tbody.insertRow();
+        row.insertCell(0).innerText = item.name;
+        row.insertCell(1).innerText = item.qty;
+        row.insertCell(2).innerHTML = `<button class="order-actions-btn" onclick="removeFromOrder(${i})">X</button>`;
+      });
+    }
+
+    window.validateOrder = function() {
+      if (order.length === 0) return updateStatus("No items to validate.", false);
+      validated = true;
+      served = delivered = false;
+      document.getElementById("serveBtn").disabled = false;
+      updateStatus("Order validated! Ready to serve.", true, 'orange');
+    };
+
+    window.serveOrder = function() {
+      if (!validated) return updateStatus("Please validate order first.", false);
+      served = true;
+      document.getElementById("serveBtn").disabled = true;
+      document.getElementById("deliverBtn").disabled = false;
+      updateStatus("Order served!", true, 'green', 'served');
+    };
+
+    window.deliverOrder = async function() {
+      if (!served) return updateStatus("Please serve order before delivery.", false);
+      delivered = true;
+      document.getElementById("deliverBtn").disabled = true;
+      updateStatus("Order delivered and confirmed!", true, 'blue', 'delivered');
+
+      await fetch(orderApi, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: order,
+          status: 'Delivered',
+          time: new Date().toISOString()
+        })
+      });
+
+      setTimeout(() => {
+        order = [];
+        validated = served = delivered = false;
+        renderOrder();
+        document.getElementById("serveBtn").disabled = true;
+        document.getElementById("deliverBtn").disabled = true;
+        updateStatus("");
+      }, 3000);
+    };
+
+    function updateStatus(msg, ok = true, color = 'orange', extraClass = '') {
+      const status = document.getElementById("orderStatus");
+      status.innerText = msg;
+      status.className = "order-status";
+      if (extraClass) status.classList.add(extraClass);
+      if (color) status.style.color = color;
+    }
+
+    fetchMenu();
+    renderOrder();
+  </script>
+</body>
+</html>

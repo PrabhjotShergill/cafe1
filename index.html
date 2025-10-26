@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cafe QuickBite</title>
+  <link rel="stylesheet" href="../styles/styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="logo">QuickBite <span class="highlight">Cafe</span></div>
+    <nav class="nav-links">
+      <a href="../login/login.html">Login</a>
+      <a href="../contact-and-about/about.html">About Us</a>
+      <a href="../contact-and-about/contact.html">Contact Us</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="menu-section">
+      <h2>Coffee & Beverages</h2>
+      <div class="items-row" id="beverageList"></div>
+    </section>
+
+    <section class="menu-section">
+      <h2>Snacks & Munchies</h2>
+      <div class="items-row" id="snackList"></div>
+    </section>
+  </main>
+
+  <script>
+    const beverages = [
+      { name: "Espresso", details: "Single shot, 30ml", price: 80, img: "espresso.jpg" },
+      { name: "Latte", details: "200ml", price: 120, img: "latte.jpg" },
+      { name: "Mocha", details: "200ml", price: 140, img: "mocha.jpg" },
+      { name: "Cold Brew", details: "300ml", price: 150, img: "coldbrew.jpg" },
+      { name: "Iced Coffee", details: "250ml", price: 130, img: "icedcoffee.jpg" }
+    ];
+
+    const snacks = [
+      { name: "Choco Chip Cookies", details: "Pack of 4", price: 100, img: "cookie.jpg" },
+      { name: "Brownie", details: "Piece", price: 80, img: "brownie.jpg" },
+      { name: "Veg Sandwich", details: "Single", price: 90, img: "sandwich.jpg" },
+      { name: "Banana Muffin", details: "Piece", price: 85, img: "muffin.jpg" }
+    ];
+
+    function renderItems(list, containerId) {
+      const container = document.getElementById(containerId);
+      list.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item-card';
+        div.innerHTML = `
+          <img src="../images/${item.img}" alt="${item.name}" />
+          <div class="item-name">${item.name}</div>
+          <div class="item-details">${item.details}</div>
+          <div class="item-footer">
+            <span class="item-price">₹${item.price}</span>
+            <button class="add-btn">ADD</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    renderItems(beverages, 'beverageList');
+    renderItems(snacks, 'snackList');
+  </script>
+</body>
+</html>

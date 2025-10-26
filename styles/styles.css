@@ -1,0 +1,42 @@
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin:0; padding:0;
+  background:#f7f7f7;
+}
+
+.header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:15px 40px; background:#8bc34a; color:#fff;
+  font-size:1.5rem; font-weight:bold;
+}
+.header .highlight { color:#fff; font-style:italic; }
+.header .search-login input { padding:7px 12px; border-radius:6px; border:none; margin-right:10px; }
+.header a, .header button { margin-left:10px; text-decoration:none; color:#fff; padding:6px 12px; border-radius:6px; border:none; cursor:pointer; background:#689f38; }
+.header a:hover, .header button:hover { background:#558b2f; }
+
+.menu-section { max-width:1000px; margin:30px auto; padding:0 15px; }
+.menu-section h2 { margin-bottom:15px; color:#333; }
+.items-row { display:flex; flex-wrap:wrap; gap:20px; }
+.item-card { background:#fff; padding:10px; border-radius:12px; width:180px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+.item-card img { width:100%; height:120px; object-fit:cover; border-radius:8px; }
+.item-footer { display:flex; justify-content:space-between; align-items:center; margin-top:10px; }
+.item-price { font-weight:bold; color:#333; }
+.add-btn { background:#8bc34a; border:none; color:#fff; padding:5px 10px; border-radius:6px; cursor:pointer; }
+.add-btn:hover { background:#689f38; }
+
+.dashboard-container {
+  max-width:1000px; margin:40px auto; background:#fff; border-radius:16px;
+  padding:30px 28px; box-shadow:0 1px 16px rgba(80,80,80,0.07);
+}
+table { width:100%; border-collapse:collapse; font-size:1rem; }
+table, th, td { border:1px solid #ddd; }
+th, td { padding:10px 12px; text-align:left; }
+th { background:#f3fbe7; color:#79a144; }
+button { background:#8bc34a; border:none; color:white; padding:9px 16px; font-weight:600; cursor:pointer; border-radius:7px; margin-top:12px; transition:background .2s ease; }
+button:hover { background:#689f38; }
+input[type="text"], input[type="number"], select { padding:7px 12px; font-size:1rem; border-radius:6px; border:1px solid #ccc; font-weight:600; color:#3b3b3b; width:220px; }
+input[type="text"]:focus, input[type="number"]:focus, select:focus { border-color:#8bc34a; outline:none; }
+.form-inline { display:flex; gap:15px; flex-wrap:wrap; align-items:center; margin-bottom:15px; }
+.btn-small { padding:7px 14px; font-size:.95rem; }
+.danger { background:#c62828; }
+.low { background:#ffeb3b; }
