@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -180,6 +180,243 @@
     fetchOrders();
     fetchMenu();
     
+  </script>
+</body>
+</html>
+ -->
+
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>QuickBite Cafe - Waiter</title>
+  <style>
+    body { font-family: Arial; background: #f7f7f7; margin: 0; }
+    .header { padding: 20px; background: #fff; font-size: 2rem; font-weight: bold; border-bottom: 1px solid #ddd; }
+    .highlight { color: #8bc34a; }
+    .container { max-width: 900px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 16px; box-shadow: 0 1px 12px rgba(0,0,0,0.05); }
+    h2 { margin-bottom: 20px; }
+    ul { list-style: none; padding: 0; }
+    li { background: #f9f9f9; margin-bottom: 12px; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+    button { background: #8bc34a; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    button:hover { background: #689f38; }
+    table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+    th { background: #f3fbe7; color: #79a144; }
+    input[type="number"] { width: 60px; padding: 6px; border-radius: 6px; border: 1px solid #ccc; text-align: center; }
+    input[type="text"] { padding: 6px; border-radius: 6px; border: 1px solid #ccc; width: 200px; }
+
+    /* Bill popup */
+    #billPopup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); }
+    .bill-content { background: #fff; margin: 60px auto; padding: 20px; width: 420px; border-radius: 10px; }
+    .bill-content h3 { text-align: center; color: #79a144; }
+    #closeBill { float: right; background: red; }
+    .summary-line { display: flex; justify-content: space-between; margin: 4px 0; }
+    .total-line { font-weight: bold; border-top: 1px solid #ddd; padding-top: 6px; }
+  </style>
+</head>
+<body>
+  <div class="header">QuickBite <span class="highlight">Waiter</span></div>
+  <div class="container">
+    <h2>Kitchen Notifications</h2>
+    <ul id="notificationList"></ul>
+
+    <h2>Assigned Orders</h2>
+    <table id="orderTable">
+      <thead>
+        <tr><th>Order ID</th><th>Items</th><th>Status</th><th>Action</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <h2>Place New Order</h2>
+    <label>Customer Phone: <input type="text" id="customerPhone" placeholder="Enter phone" /></label>
+    <table id="menuTable">
+      <thead>
+        <tr><th>Item</th><th>Details</th><th>Price</th><th>Qty</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button onclick="submitOrder()">Submit Order</button>
+    <p id="orderMsg" style="margin-top:10px; color:green;"></p>
+  </div>
+
+  <!-- Bill Popup -->
+  <div id="billPopup">
+    <div class="bill-content" id="billContent">
+      <button id="closeBill" onclick="closeBill()">X</button>
+      <h3>Customer Bill Summary</h3>
+      <div id="billDetails"></div>
+      <button onclick="window.print()">Print Bill</button>
+    </div>
+  </div>
+
+  <script>
+    const notifyApi = 'http://localhost:3000/notifications';
+    const orderApi = 'http://localhost:3000/orders';
+    const menuApi = 'http://localhost:3000/menu';
+    let menu = [];
+
+    async function fetchNotifications() {
+      const res = await fetch(notifyApi);
+      const all = await res.json();
+      const waiterNotes = all.filter(n => n.role === 'Waiter');
+      renderNotifications(waiterNotes);
+    }
+
+    function renderNotifications(notes) {
+      const list = document.getElementById('notificationList');
+      list.innerHTML = '';
+      notes.forEach(n => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          ${n.message}
+          <button onclick="acknowledge('${n.id}', '${n.orderId}')">Received</button>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    async function acknowledge(noteId, orderCode) {
+      await fetch(`${notifyApi}/${noteId}`, { method: 'DELETE' });
+      const res = await fetch(orderApi);
+      const allOrders = await res.json();
+      const order = allOrders.find(o => o.orderId === orderCode);
+      if (order) {
+        await fetch(`${orderApi}/${order.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'Completed', notified: false })
+        });
+      }
+      fetchNotifications();
+      fetchOrders();
+    }
+
+    async function fetchOrders() {
+      const res = await fetch(orderApi);
+      const allOrders = await res.json();
+      renderOrders(allOrders);
+    }
+
+    function renderOrders(orders) {
+      const tbody = document.getElementById('orderTable').querySelector('tbody');
+      tbody.innerHTML = '';
+      orders.forEach(order => {
+        const items = order.items.map(i => `${i.name} x${i.qty}`).join(', ');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${order.orderId}</td>
+          <td>${items}</td>
+          <td>${order.status}</td>
+          <td><button onclick="showBill('${order.orderId}')">View Bill</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function fetchMenu() {
+      const res = await fetch(menuApi);
+      menu = await res.json();
+      renderMenu();
+    }
+
+    function renderMenu() {
+      const tbody = document.querySelector('#menuTable tbody');
+      tbody.innerHTML = '';
+      menu.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.details}</td>
+          <td>₹${item.price}</td>
+          <td><input type="number" min="0" value="0" id="qty${item.id}" /></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function generateOrderId() {
+      return 'QB-' + Math.floor(100000 + Math.random() * 900000);
+    }
+
+    async function submitOrder() {
+      const phone = document.getElementById('customerPhone').value.trim();
+      if (!phone) {
+        alert('Please enter customer phone number.');
+        return;
+      }
+
+      const items = menu.map(item => {
+        const qty = parseInt(document.getElementById(`qty${item.id}`).value);
+        return qty > 0 ? { name: item.name, qty, price: item.price } : null;
+      }).filter(Boolean);
+
+      if (items.length === 0) {
+        alert('Please select at least one item.');
+        return;
+      }
+
+      const order = {
+        orderId: generateOrderId(),
+        items,
+        status: 'Pending',
+        time: new Date().toISOString(),
+        customerPhone: phone,
+        notified: false
+      };
+
+      await fetch(orderApi, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(order)
+      });
+
+      document.getElementById('orderMsg').innerText = 'Order placed successfully!';
+      setTimeout(() => document.getElementById('orderMsg').innerText = '', 6000);
+      document.getElementById('customerPhone').value = '';
+      menu.forEach(item => document.getElementById(`qty${item.id}`).value = 0);
+      fetchOrders();
+    }
+
+    async function showBill(orderId) {
+      const res = await fetch(orderApi);
+      const allOrders = await res.json();
+      const order = allOrders.find(o => o.orderId === orderId);
+      if (!order) return alert('Order not found.');
+
+      const billDetails = document.getElementById('billDetails');
+      const subtotal = order.items.reduce((sum, i) => sum + i.price * i.qty, 0);
+      const tax = subtotal * 0.05;  // 5% tax
+      const service = subtotal * 0.02; // 2% service charge
+      const total = subtotal + tax + service;
+
+      const list = order.items.map(i =>
+        `<div class="summary-line"><span>${i.name} x${i.qty}</span><span>₹${(i.price * i.qty).toFixed(2)}</span></div>`
+      ).join('');
+
+      billDetails.innerHTML = `
+        <p><strong>Order ID:</strong> ${order.orderId}</p>
+        <p><strong>Customer:</strong> ${order.customerPhone}</p>
+        <hr>
+        ${list}
+        <hr>
+        <div class="summary-line"><span>Subtotal</span><span>₹${subtotal.toFixed(2)}</span></div>
+        <div class="summary-line"><span>Tax (5%)</span><span>₹${tax.toFixed(2)}</span></div>
+        <div class="summary-line"><span>Service (2%)</span><span>₹${service.toFixed(2)}</span></div>
+        <div class="summary-line total-line"><span>Total</span><span>₹${total.toFixed(2)}</span></div>
+      `;
+      document.getElementById('billPopup').style.display = 'block';
+    }
+
+    function closeBill() {
+      document.getElementById('billPopup').style.display = 'none';
+    }
+
+    fetchNotifications();
+    fetchOrders();
+    fetchMenu();
   </script>
 </body>
 </html>

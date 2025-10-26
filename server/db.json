@@ -45,7 +45,23 @@
     }
   ],
   "reports": [],
-  "orders": [],
+  "orders": [
+    {
+      "id": "d239",
+      "orderId": "QB-893831",
+      "items": [
+        {
+          "name": "Espresso",
+          "qty": 1,
+          "price": 80
+        }
+      ],
+      "status": "Completed",
+      "time": "2025-10-26T20:50:08.229Z",
+      "customerPhone": "1234567898",
+      "notified": false
+    }
+  ],
   "inventory": [
     {
       "id": "1",
