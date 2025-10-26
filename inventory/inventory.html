@@ -40,7 +40,7 @@
       color: #79a144;
     }
     input.stock-input {
-      width: 70px;
+      width: 80px;
       padding: 6px 8px;
       font-size: 1rem;
       border-radius: 6px;
@@ -102,13 +102,14 @@
     function renderInventory() {
       const tbody = document.querySelector('#inventoryTable tbody');
       tbody.innerHTML = '';
-      inventory.forEach((item, idx) => {
+      inventory.forEach(item => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${item.name}</td>
-          <td>${item.stock}</td>
+          <td>${item.stock} ${item.unit}</td>
           <td>
-            <input type="number" min="0" value="${item.stock}" class="stock-input" id="stockInput${item.id}" />
+            <input type="number" min="0" step="0.1" value="${item.stock}" class="stock-input" id="stockInput${item.id}" />
+            <span style="margin-left:6px;">${item.unit}</span>
           </td>
         `;
         tbody.appendChild(tr);
@@ -116,21 +117,28 @@
     }
 
     async function updateStock() {
-      for (let item of inventory) {
+      const updates = inventory.map(async item => {
         const input = document.getElementById(`stockInput${item.id}`);
-        const newVal = parseInt(input.value);
+        const newVal = parseFloat(input.value);
         if (isNaN(newVal) || newVal < 0) {
           alert(`Invalid stock for ${item.name}`);
-          return;
+          throw new Error(`Invalid stock for ${item.name}`);
         }
-        await fetch(`${inventoryApi}/${item.id}`, {
+        const updatedStock = parseFloat(newVal.toFixed(2));
+        return fetch(`${inventoryApi}/${item.id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ stock: newVal })
+          body: JSON.stringify({ stock: updatedStock })
         });
+      });
+
+      try {
+        await Promise.all(updates);
+        alert('Stock updated successfully!');
+        fetchInventory();
+      } catch (err) {
+        console.error('Update failed:', err);
       }
-      alert('Stock updated successfully!');
-      fetchInventory();
     }
 
     function notifyManager() {
@@ -138,7 +146,7 @@
       if (lowStock.length === 0) {
         alert('All stock levels are sufficient.');
       } else {
-        const msg = 'Low stock alert for:\n' + lowStock.map(i => `- ${i.name}: ${i.stock}`).join('\n');
+        const msg = 'Low stock alert for:\n' + lowStock.map(i => `- ${i.name}: ${i.stock} ${i.unit}`).join('\n');
         alert(msg);
       }
     }

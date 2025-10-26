@@ -62,8 +62,9 @@
         }
       ],
       "total": 320,
-      "status": "Saved",
-      "time": "2025-10-26T16:45:02.906Z"
+      "status": "Completed",
+      "time": "2025-10-26T16:45:02.906Z",
+      "notified": false
     },
     {
       "id": "7de5",
@@ -82,75 +83,214 @@
       ],
       "total": 85,
       "time": "2025-10-26T16:49:23.142Z",
-      "status": "Saved",
+      "status": "Completed",
       "method": "Unpaid"
+    },
+    {
+      "id": "c512",
+      "orderId": "QB-093609",
+      "customerName": "a",
+      "customerPhone": "1234567898",
+      "items": [
+        {
+          "id": "9",
+          "name": "Banana Muffin",
+          "details": "Piece",
+          "category": "Snacks & Munchies",
+          "price": 85,
+          "qty": 1
+        },
+        {
+          "id": "5",
+          "name": "Iced Coffee",
+          "details": "250ml",
+          "category": "Coffee & Beverages",
+          "price": 130,
+          "qty": 1
+        }
+      ],
+      "total": 215,
+      "time": "2025-10-26T18:24:53.609Z",
+      "status": "Completed",
+      "method": "Unpaid",
+      "notified": false
+    },
+    {
+      "id": "5bb8",
+      "orderId": "QB-900880",
+      "items": [
+        {
+          "name": "Espresso",
+          "qty": 2
+        }
+      ],
+      "status": "Completed",
+      "time": "2025-10-26T18:48:21.716Z",
+      "customerPhone": "1234567898",
+      "notified": false
+    },
+    {
+      "id": "cab9",
+      "orderId": "QB-783864",
+      "items": [
+        {
+          "name": "Espresso",
+          "qty": 1
+        }
+      ],
+      "status": "Pending",
+      "time": "2025-10-26T19:06:13.111Z",
+      "customerPhone": "1234567898",
+      "notified": false
+    },
+    {
+      "id": "7d4c",
+      "orderId": "QB-264945",
+      "items": [
+        {
+          "name": "Espresso",
+          "qty": 1
+        }
+      ],
+      "status": "Pending",
+      "time": "2025-10-26T19:23:41.061Z",
+      "customerPhone": "12345678964",
+      "notified": false
     }
   ],
-  "inventory": [],
+  "inventory": [
+    {
+      "id": "1",
+      "name": "Coffee Beans",
+      "unit": "kg",
+      "stock": 15
+    },
+    {
+      "id": "2",
+      "name": "Milk",
+      "stock": 10,
+      "unit": "liters"
+    },
+    {
+      "id": "3",
+      "name": "Sugar",
+      "stock": 3,
+      "unit": "kg"
+    },
+    {
+      "id": "4",
+      "name": "Chocolate Syrup",
+      "stock": 2,
+      "unit": "liters"
+    },
+    {
+      "id": "5",
+      "name": "Ice Cubes",
+      "stock": 1000,
+      "unit": "pieces"
+    },
+    {
+      "id": "6",
+      "name": "Bananas",
+      "stock": 20,
+      "unit": "pieces"
+    },
+    {
+      "id": "7",
+      "name": "Butter",
+      "stock": 1.5,
+      "unit": "kg"
+    },
+    {
+      "id": "8",
+      "name": "Flour",
+      "stock": 5,
+      "unit": "kg"
+    },
+    {
+      "id": "9",
+      "name": "Eggs",
+      "stock": 60,
+      "unit": "pieces"
+    },
+    {
+      "id": "10",
+      "name": "Chocolate Chips",
+      "stock": 1.2,
+      "unit": "kg"
+    },
+    {
+      "id": "11",
+      "name": "Water Bottles",
+      "stock": 40,
+      "unit": "bottles"
+    }
+  ],
   "menu": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Espresso",
       "details": "Single shot, 30ml",
       "category": "Coffee & Beverages",
       "price": 80
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Latte",
       "details": "120ml",
       "category": "Coffee & Beverages",
       "price": 120
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Mocha",
       "details": "200ml",
       "category": "Coffee & Beverages",
       "price": 140
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Cold Brew",
       "details": "300ml",
       "category": "Coffee & Beverages",
       "price": 150
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "Iced Coffee",
       "details": "250ml",
       "category": "Coffee & Beverages",
       "price": 130
     },
     {
-      "id": 6,
+      "id": "6",
       "name": "Choco Chip Cookies",
       "details": "Pack of 4",
       "category": "Snacks & Munchies",
       "price": 80
     },
     {
-      "id": 7,
+      "id": "7",
       "name": "Brownie",
       "details": "Piece",
       "category": "Snacks & Munchies",
       "price": 80
     },
     {
-      "id": 8,
+      "id": "8",
       "name": "Veg Sandwich",
       "details": "Single",
       "category": "Snacks & Munchies",
       "price": 90
     },
     {
-      "id": 9,
+      "id": "9",
       "name": "Banana Muffin",
       "details": "Piece",
       "category": "Snacks & Munchies",
       "price": 85
     }
   ],
-  "sales": []
+  "sales": [],
+  "notifications": []
 }
