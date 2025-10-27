@@ -41,7 +41,7 @@
     {
       "id": "28e3",
       "name": "JASKARAN",
-      "role": "Kitchen"
+      "role": "Waiter"
     }
   ],
   "reports": [],
@@ -60,6 +60,21 @@
       "time": "2025-10-26T20:50:08.229Z",
       "customerPhone": "1234567898",
       "notified": false
+    },
+    {
+      "id": "df3c",
+      "orderId": "QB-984099",
+      "items": [
+        {
+          "name": "Espresso",
+          "qty": 1,
+          "price": 80
+        }
+      ],
+      "status": "Completed",
+      "time": "2025-10-27T03:40:19.987Z",
+      "customerPhone": "6239153901",
+      "notified": false
     }
   ],
   "inventory": [
@@ -67,7 +82,7 @@
       "id": "1",
       "name": "Coffee Beans",
       "unit": "kg",
-      "stock": 15
+      "stock": 5
     },
     {
       "id": "2",
@@ -192,7 +207,7 @@
       "name": "Banana Muffin",
       "details": "Piece",
       "category": "Snacks & Munchies",
-      "price": 85
+      "price": 100
     }
   ],
   "sales": [],
