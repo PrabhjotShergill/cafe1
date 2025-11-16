@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -96,7 +96,6 @@
       <input type="password" id="password" placeholder="Password" required />
       <select id="role" required>
         <option value="" disabled selected>Select Role</option>
-        <option value="cashier">Cashier</option>
         <option value="waiter">Waiter</option>
         <option value="kitchen">Kitchen</option>
         <option value="inventory">Inventory</option>
@@ -167,6 +166,106 @@
       } catch (err) {
         console.error('Login error:', err);
         errorMsg.textContent = 'Unable to connect to server. Please try again.';
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Login';
+      }
+    });
+  </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>QuickBite Cafe Login</title>
+  <link rel="stylesheet" href="../styles/styles.css" />
+  <style>
+    body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(to right, #f3fbe7, #e8f5e9); display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .login-container { background: #fff; padding: 40px 50px; border-radius: 16px; box-shadow: 0 0 20px rgba(0,0,0,0.08); width: 360px; text-align: center; }
+    h2 { margin-bottom: 28px; color: #79a144; font-size: 1.8rem; }
+    input, select { width: 100%; padding: 12px 14px; margin: 12px 0; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; font-weight: 500; color: #333; transition: border-color 0.2s ease; }
+    input:focus, select:focus { border-color: #8bc34a; outline: none; }
+    button { background: #8bc34a; color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; font-weight: 700; font-size: 1.1rem; cursor: pointer; margin-top: 16px; transition: background 0.25s ease; }
+    button:hover { background: #689f38; }
+    .error-msg { color: #c62828; font-weight: 600; margin-top: 10px; min-height: 20px; }
+    .footer-links { margin-top: 20px; font-size: 0.9rem; }
+    .footer-links a { color: #79a144; text-decoration: none; margin: 0 8px; }
+    .footer-links a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>QuickBite Cafe Login</h2>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Staff Username" required autocomplete="username" />
+      <input type="password" id="password" placeholder="Password" required autocomplete="current-password" />
+      <select id="role" required>
+        <option value="" disabled selected>Select Role</option>
+        <option value="Waiter">Waiter</option>
+        <option value="Kitchen">Kitchen</option>
+        <option value="Inventory">Inventory</option>
+        <option value="Manager">Manager</option>
+        <option value="Admin">Admin</option>
+      </select>
+      <button type="submit" id="loginBtn">Login</button>
+      <div class="error-msg" id="errorMsg"></div>
+    </form>
+    <div class="footer-links">
+      <a href="../contact-and-about/about.html">About</a> |
+      <a href="../contact-and-about/contact.html">Contact</a>
+    </div>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const errorMsg = document.getElementById('errorMsg');
+    const loginBtn = document.getElementById('loginBtn');
+
+    loginForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      errorMsg.textContent = '';
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Logging in...';
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const role = document.getElementById('role').value;
+
+      if (!username || !password || !role) {
+        errorMsg.textContent = 'Please fill in all fields.';
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Login';
+        return;
+      }
+
+      // Authenticate from staff array
+      const res = await fetch(`http://localhost:3000/staff?username=${username}&password=${password}&role=${role}`);
+      const staff = await res.json();
+
+      if (staff.length === 0) {
+        errorMsg.textContent = 'Invalid credentials or role.';
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Login';
+        return;
+      }
+
+      sessionStorage.setItem('loggedInUser', JSON.stringify(staff[0]));
+
+      const redirectMap = {
+        Cashier: '../cashier/cashier.html',
+        Waiter: '../waiter/waiter.html',
+        Kitchen: '../kitchen/kitchen.html',
+        Inventory: '../inventory/inventory.html',
+        Manager: '../manager/manager.html',
+        Admin: '../admin/admin.html'
+      };
+
+      const redirectURL = redirectMap[role];
+      if (redirectURL) {
+        window.location.href = redirectURL;
+      } else {
+        errorMsg.textContent = 'Role not recognized.';
         loginBtn.disabled = false;
         loginBtn.textContent = 'Login';
       }

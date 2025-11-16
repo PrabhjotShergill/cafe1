@@ -42,6 +42,42 @@
       "id": "28e3",
       "name": "JASKARAN",
       "role": "Waiter"
+    },
+    {
+      "id": "1",
+      "username": "admin1",
+      "password": "pass123",
+      "role": "admin"
+    },
+    {
+      "id": "2",
+      "username": "cashier1",
+      "password": "pass123",
+      "role": "cashier"
+    },
+    {
+      "id": "3",
+      "username": "waiter1",
+      "password": "pass123",
+      "role": "waiter"
+    },
+    {
+      "id": "4",
+      "username": "kitchen1",
+      "password": "pass123",
+      "role": "kitchen"
+    },
+    {
+      "id": "5",
+      "username": "inventory1",
+      "password": "pass123",
+      "role": "inventory"
+    },
+    {
+      "id": "6",
+      "username": "manager1",
+      "password": "pass123",
+      "role": "manager"
     }
   ],
   "reports": [],
@@ -180,13 +216,6 @@
       "details": "250ml",
       "category": "Coffee & Beverages",
       "price": 130
-    },
-    {
-      "id": "6",
-      "name": "Choco Chip Cookies",
-      "details": "Pack of 4",
-      "category": "Snacks & Munchies",
-      "price": 80
     },
     {
       "id": "7",

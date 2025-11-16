@@ -16,15 +16,7 @@
   </header>
 
   <main>
-    <section class="menu-section">
-      <h2>Coffee & Beverages</h2>
-      <div class="items-row" id="beverageList"></div>
-    </section>
-
-    <section class="menu-section">
-      <h2>Snacks & Munchies</h2>
-      <div class="items-row" id="snackList"></div>
-    </section>
+    <!-- Menu sections will be dynamically generated here -->
   </main>
 
   <script>
@@ -33,11 +25,31 @@
         const response = await fetch('http://localhost:3000/menu');
         const items = await response.json();
 
-        const beverages = items.filter(item => item.category === 'Coffee & Beverages');
-        const snacks = items.filter(item => item.category === 'Snacks & Munchies');
+        // Group items by category
+        const categories = {};
+        items.forEach(item => {
+          if (!categories[item.category]) {
+            categories[item.category] = [];
+          }
+          categories[item.category].push(item);
+        });
 
-        renderItems(beverages, 'beverageList');
-        renderItems(snacks, 'snackList');
+        // Dynamically create sections for each category
+        const main = document.querySelector('main');
+        main.innerHTML = ''; // Clear existing sections
+
+        Object.keys(categories).forEach(category => {
+          const section = document.createElement('section');
+          section.className = 'menu-section';
+          section.innerHTML = `<h2>${category}</h2>`;
+          const container = document.createElement('div');
+          container.className = 'items-row';
+          container.id = category.toLowerCase().replace(/\s+/g, '') + 'List';
+          section.appendChild(container);
+          main.appendChild(section);
+
+          renderItems(categories[category], container.id);
+        });
       } catch (error) {
         console.error('Error fetching menu:', error);
       }
