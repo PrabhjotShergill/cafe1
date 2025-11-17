@@ -1,52 +1,39 @@
 {
   "staff": [
     {
-      "id": "28e3",
-      "name": "JASKARAN",
+      "id": "317d",
+      "name": "admin1",
+      "username": "admin1",
+      "password": "pass123",
+      "role": "Admin"
+    },
+    {
+      "id": "0938",
+      "name": "waiter1",
+      "username": "waiter1",
+      "password": "pass123",
       "role": "Waiter"
     },
     {
-      "id": "1",
-      "name": "admin1",
-      "password": "pass123",
-      "role": "admin"
-    },
-    {
-      "id": "2",
-      "name": "cashier1",
-      "password": "pass123",
-      "role": "cashier"
-    },
-    {
-      "id": "3",
-      "name": "waiter1",
-      "password": "pass123",
-      "role": "waiter"
-    },
-    {
-      "id": "4",
+      "id": "becb",
       "name": "kitchen1",
-      "password": "pass123",
-      "role": "kitchen"
-    },
-    {
-      "id": "5",
-      "name": "inventory1",
-      "password": "pass123",
-      "role": "inventory"
-    },
-    {
-      "id": "6",
-      "name": "manager1",
-      "password": "pass123",
-      "role": "manager"
-    },
-    {
-      "id": "516d",
-      "name": "x",
-      "username": "x",
+      "username": "kitchen1",
       "password": "pass123",
       "role": "Kitchen"
+    },
+    {
+      "id": "1b3c",
+      "name": "inventory1",
+      "username": "inventory1",
+      "password": "pass123",
+      "role": "Inventory"
+    },
+    {
+      "id": "771a",
+      "name": "manager1",
+      "username": "manager1",
+      "password": "pass123",
+      "role": "Manager"
     }
   ],
   "reports": [],
