@@ -1,78 +1,258 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cafe QuickBite</title>
-  <link rel="stylesheet" href="../styles/styles.css" />
+  <style>
+    /* ---------- Base / Desktop styles (kept similar to your original) ---------- */
+    :root{
+      --green-500:#8bc34a;
+      --green-600:#689f38;
+      --green-700:#558b2f;
+      --muted:#777;
+      --card-radius:12px;
+      --max-width:1100px;
+    }
+    *{box-sizing:border-box}
+    body{font-family: 'Segoe UI', Arial, sans-serif; margin:0; padding:0; background:#f7f7f7; color:#222}
+
+    .header{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 20px; background:var(--green-500); color:#fff;
+    }
+    .logo{font-size:1.25rem; font-weight:700}
+    .logo .highlight{font-style:italic}
+
+    /* nav */
+    .nav-links{display:flex; gap:8px; align-items:center}
+    .nav-links a{color:#fff; text-decoration:none; padding:8px 10px; border-radius:8px; background:transparent}
+    .nav-links a:hover{background:rgba(255,255,255,0.06)}
+
+    /* header utilities for larger screens */
+    .header-right{display:flex; gap:12px; align-items:center}
+
+    main{padding:24px 12px; max-width:var(--max-width); margin:0 auto}
+
+    .menu-section{margin:22px auto}
+    .menu-section h2{margin:6px 0 14px 0; color:#333}
+
+    /* responsive grid for items */
+    .items-row{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap:16px;
+      align-items:start;
+    }
+    .item-card{
+      background:#fff; border-radius:var(--card-radius); overflow:hidden; display:flex; flex-direction:column; min-height:260px; box-shadow:0 2px 10px rgba(0,0,0,0.06);
+    }
+    .item-card .image-wrap{height:150px; background:linear-gradient(90deg,#eee,#f7f7f7); display:flex; align-items:center; justify-content:center}
+    .item-card img{width:100%; height:100%; object-fit:cover; display:block}
+    .item-body{padding:12px; display:flex; flex-direction:column; gap:8px; flex:1}
+    .item-name{font-weight:600; font-size:1rem}
+    .item-details{color:var(--muted); font-size:.95rem; flex:1}
+    .item-footer{display:flex; align-items:center; justify-content:space-between; padding:10px 12px}
+    .item-price{font-weight:700}
+
+    /* dashboard styles kept but responsive */
+    .dashboard-container{background:#fff; border-radius:16px; padding:20px; box-shadow:0 1px 20px rgba(0,0,0,0.04); margin:20px 0}
+    table{width:100%; border-collapse:collapse; font-size:0.95rem}
+    th,td{padding:10px; border:1px solid #e9e9e9; text-align:left}
+    th{background:#f3fbe7; color:var(--green-600)}
+
+    /* small helper classes */
+    .btn{background:var(--green-500); color:#fff; border:none; padding:8px 12px; border-radius:8px; cursor:pointer}
+    .btn:hover{background:var(--green-600)}
+
+    /* ---------- Mobile-first adjustments (media queries) ---------- */
+    @media (max-width: 900px){
+      :root{--max-width:900px}
+      .header{padding:12px 16px}
+      .logo{font-size:1.05rem}
+    }
+
+    /* On small screens: stack header and collapse nav into a toggled menu */
+    @media (max-width: 640px){
+      .header{flex-wrap:wrap; gap:10px; align-items:center}
+      .header-left{display:flex; gap:12px; align-items:center}
+      .header-right{width:100%; display:flex; justify-content:space-between; align-items:center}
+
+      /* hide the regular nav and show a compact menu button */
+      .nav-links{display:none}
+      .menu-toggle{display:inline-flex; align-items:center; gap:8px; background:transparent; border:1px solid rgba(255,255,255,0.12); color:#fff; padding:8px 10px; border-radius:8px}
+
+      /* mobile nav panel (when opened) */
+      .mobile-nav{display:none; width:100%; background:linear-gradient(180deg, rgba(0,0,0,0.03), transparent); padding:10px 12px; border-radius:10px}
+      .mobile-nav a{display:block; padding:8px 6px; color:#222; background:#fff; margin-bottom:8px; border-radius:8px; text-decoration:none}
+
+      /* make item cards a touch-friendly height */
+      .item-card{min-height:270px}
+      .item-card .image-wrap{height:160px}
+    }
+
+    /* small typographic tweaks for very small phones */
+    @media (max-width:360px){
+      .item-name{font-size:.98rem}
+      .item-details{font-size:.9rem}
+    }
+
+    /* Utility: placeholder when <img> fails to load (script also handles insertion) */
+    .placeholder-img{height:150px; display:flex; align-items:center; justify-content:center; color:#999; background:linear-gradient(90deg,#eee,#f7f7f7)}
+
+  </style>
 </head>
 <body>
   <header class="header">
-    <div class="logo">QuickBite <span class="highlight">Cafe</span></div>
-    <nav class="nav-links">
+    <div class="header-left" style="display:flex;align-items:center;gap:12px">
+      <div class="logo">QuickBite <span class="highlight">Cafe</span></div>
+    </div>
+
+    <div class="header-right">
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="../login/login.html">Login</a>
+        <a href="../contact-and-about/about.html">About Us</a>
+        <a href="../contact-and-about/contact.html">Contact Us</a>
+      </nav>
+
+      <!-- mobile toggle -->
+      <button class="menu-toggle" aria-expanded="false" aria-controls="mobileNav" id="menuToggle" style="display:none">
+        ☰ Menu
+      </button>
+    </div>
+
+    <!-- mobile nav panel (hidden by default) -->
+    <div id="mobileNav" class="mobile-nav" aria-hidden="true">
       <a href="../login/login.html">Login</a>
-      <a href="contact-and-about/about.html">About Us</a>
+      <a href="../contact-and-about/about.html">About Us</a>
       <a href="../contact-and-about/contact.html">Contact Us</a>
-    </nav>
+    </div>
   </header>
 
   <main>
-    <!-- Menu sections will be dynamically generated here -->
+    <!-- sections injected by JS -->
   </main>
 
   <script>
-    async function fetchmenu() {
-      try {
+    // --- Responsive header JS: show toggle on small screens and wire it ---
+    (function(){
+      const toggle = document.getElementById('menuToggle');
+      const mobileNav = document.getElementById('mobileNav');
+      function syncToggleVisibility(){
+        const isMobile = window.matchMedia('(max-width:640px)').matches;
+        if(isMobile){
+          toggle.style.display = 'inline-flex';
+          // hide desktop nav
+          document.querySelector('.nav-links').style.display = 'none';
+        } else {
+          toggle.style.display = 'none';
+          document.querySelector('.nav-links').style.display = 'flex';
+          mobileNav.style.display = 'none';
+          mobileNav.setAttribute('aria-hidden','true');
+          toggle.setAttribute('aria-expanded','false');
+        }
+      }
+      toggle.addEventListener('click', ()=>{
+        const open = mobileNav.style.display === 'block';
+        mobileNav.style.display = open ? 'none' : 'block';
+        mobileNav.setAttribute('aria-hidden', open ? 'true' : 'false');
+        toggle.setAttribute('aria-expanded', String(!open));
+      });
+      window.addEventListener('resize', syncToggleVisibility);
+      syncToggleVisibility();
+    })();
+
+    /* ---------- Your existing menu fetch + render logic, slightly adapted ---------- */
+    function slugify(str){
+      return (str||'').toString().trim().toLowerCase().replace(/[^\w\s-]/g,'').replace(/\s+/g,'-').replace(/--+/g,'-');
+    }
+
+    function escapeHtml(str){
+      return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    async function fetchmenu(){
+      try{
         const response = await fetch('http://localhost:3000/menu');
+        if(!response.ok) throw new Error('Menu fetch failed: '+response.status);
         const items = await response.json();
+        const data = Array.isArray(items) ? items : (items.menu || []);
+        if(!Array.isArray(data)){
+          document.querySelector('main').innerHTML = '<p style="padding:20px;color:#a00">Menu endpoint returned unexpected data.</p>';
+          return;
+        }
 
-        // Group items by category
-        const categories = {};
-        items.forEach(item => {
-          if (!categories[item.category]) {
-            categories[item.category] = [];
-          }
-          categories[item.category].push(item);
-        });
+        const categories = data.reduce((acc,item)=>{
+          const cat = item.category || 'Uncategorized';
+          (acc[cat]||(acc[cat]=[])).push(item);
+          return acc;
+        },{});
 
-        // Dynamically create sections for each category
         const main = document.querySelector('main');
-        main.innerHTML = ''; // Clear existing sections
-
-        Object.keys(categories).forEach(category => {
+        main.innerHTML = '';
+        Object.keys(categories).forEach(cat=>{
           const section = document.createElement('section');
           section.className = 'menu-section';
-          section.innerHTML = `<h2>${category}</h2>`;
+          section.innerHTML = `<h2>${escapeHtml(cat)}</h2>`;
           const container = document.createElement('div');
           container.className = 'items-row';
-          container.id = category.toLowerCase().replace(/\s+/g, '') + 'List';
+          container.id = slugify(cat)+'List';
           section.appendChild(container);
           main.appendChild(section);
-
-          renderItems(categories[category], container.id);
+          renderItems(categories[cat], container);
         });
-      } catch (error) {
-        console.error('Error fetching menu:', error);
+      }catch(err){
+        console.error(err);
+        document.querySelector('main').innerHTML = `<p style="padding:20px;color:#a00">Failed to load menu. (${escapeHtml(err.message)})</p>`;
       }
     }
 
-    function renderItems(list, containerId) {
-      const container = document.getElementById(containerId);
+    function renderItems(list, container){
       container.innerHTML = '';
-      list.forEach(item => {
+      list.forEach(item=>{
         const div = document.createElement('div');
         div.className = 'item-card';
-        div.innerHTML = `
-          <img src="../images/${item.name.toLowerCase().replace(/\s+/g, '')}.jpg" alt="${item.name}" />
-          <div class="item-name">${item.name}</div>
-          <div class="item-details">${item.details}</div>
-          <div class="item-footer">
-            <span class="item-price">₹${item.price}</span>
-          </div>
-        `;
+        const slugName = slugify(item.name||'');
+        const fallbackPath = `../images/${slugName}.jpg`;
+        let imageSrc = item.image && item.image.trim() ? item.image.trim() : fallbackPath;
+        if(imageSrc && !/^https?:\/\//i.test(imageSrc)){
+          imageSrc = imageSrc.split('/').map(part=>encodeURIComponent(part)).join('/');
+        }
+        const price = (typeof item.price === 'number' || !isNaN(Number(item.price))) ? `₹${item.price}` : '—';
+        const details = item.details ? escapeHtml(item.details) : '';
+
+        // Build elements rather than huge innerHTML string to make fallbacks easier
+        const imgWrap = document.createElement('div');
+        imgWrap.className = 'image-wrap';
+        const img = document.createElement('img');
+        img.loading = 'lazy';
+        img.src = imageSrc;
+        img.alt = item.name || 'menu item';
+        img.addEventListener('error', function(){
+          // remove broken img and insert placeholder
+          if(img && img.parentNode) img.parentNode.replaceChild(createPlaceholder(), img);
+        });
+        imgWrap.appendChild(img);
+
+        const body = document.createElement('div'); body.className = 'item-body';
+        const nameEl = document.createElement('div'); nameEl.className = 'item-name'; nameEl.textContent = item.name || 'Unnamed';
+        const detailsEl = document.createElement('div'); detailsEl.className = 'item-details'; detailsEl.innerHTML = details;
+        body.appendChild(nameEl); body.appendChild(detailsEl);
+
+        const footer = document.createElement('div'); footer.className = 'item-footer';
+        const priceEl = document.createElement('span'); priceEl.className = 'item-price'; priceEl.textContent = price;
+        footer.appendChild(priceEl);
+
+        div.appendChild(imgWrap); div.appendChild(body); div.appendChild(footer);
         container.appendChild(div);
       });
     }
 
+    function createPlaceholder(){
+      const p = document.createElement('div'); p.className = 'placeholder-img'; p.textContent = 'Image not found'; return p;
+    }
+
+    // kick off
     fetchmenu();
   </script>
 </body>

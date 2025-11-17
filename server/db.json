@@ -1,42 +1,4 @@
 {
-  "users": [
-    {
-      "id": "1",
-      "username": "admin1",
-      "password": "pass123",
-      "role": "admin"
-    },
-    {
-      "id": "2",
-      "username": "cashier1",
-      "password": "pass123",
-      "role": "cashier"
-    },
-    {
-      "id": "3",
-      "username": "waiter1",
-      "password": "pass123",
-      "role": "waiter"
-    },
-    {
-      "id": "4",
-      "username": "kitchen1",
-      "password": "pass123",
-      "role": "kitchen"
-    },
-    {
-      "id": "5",
-      "username": "inventory1",
-      "password": "pass123",
-      "role": "inventory"
-    },
-    {
-      "id": "6",
-      "username": "manager1",
-      "password": "pass123",
-      "role": "manager"
-    }
-  ],
   "staff": [
     {
       "id": "28e3",
@@ -45,39 +7,46 @@
     },
     {
       "id": "1",
-      "username": "admin1",
+      "name": "admin1",
       "password": "pass123",
       "role": "admin"
     },
     {
       "id": "2",
-      "username": "cashier1",
+      "name": "cashier1",
       "password": "pass123",
       "role": "cashier"
     },
     {
       "id": "3",
-      "username": "waiter1",
+      "name": "waiter1",
       "password": "pass123",
       "role": "waiter"
     },
     {
       "id": "4",
-      "username": "kitchen1",
+      "name": "kitchen1",
       "password": "pass123",
       "role": "kitchen"
     },
     {
       "id": "5",
-      "username": "inventory1",
+      "name": "inventory1",
       "password": "pass123",
       "role": "inventory"
     },
     {
       "id": "6",
-      "username": "manager1",
+      "name": "manager1",
       "password": "pass123",
       "role": "manager"
+    },
+    {
+      "id": "516d",
+      "name": "x",
+      "username": "x",
+      "password": "pass123",
+      "role": "Kitchen"
     }
   ],
   "reports": [],
@@ -187,56 +156,272 @@
       "name": "Espresso",
       "details": "Single shot, 30ml",
       "category": "Coffee & Beverages",
-      "price": 80
+      "price": 80,
+      "image": "images/espresso.jpg"
     },
     {
       "id": "2",
       "name": "Latte",
       "details": "120ml",
       "category": "Coffee & Beverages",
-      "price": 120
+      "price": 120,
+      "image": "images/latte.jpg"
     },
     {
       "id": "3",
       "name": "Mocha",
       "details": "200ml",
       "category": "Coffee & Beverages",
-      "price": 140
+      "price": 140,
+      "image": "images/mocha.jpg"
     },
     {
       "id": "4",
       "name": "Cold Brew",
       "details": "300ml",
-      "category": "Coffee & Beverages",
-      "price": 150
+      "category": "Cold Coffee",
+      "price": 150,
+      "image": "images/Cold Brew.jpg"
     },
     {
       "id": "5",
       "name": "Iced Coffee",
       "details": "250ml",
-      "category": "Coffee & Beverages",
-      "price": 130
+      "category": "Cold Coffee",
+      "price": 130,
+      "image": "images/Iced Coffee.jpg"
     },
     {
       "id": "7",
       "name": "Brownie",
       "details": "Piece",
       "category": "Snacks & Munchies",
-      "price": 80
+      "price": 80,
+      "image": "images/brownie.jpg"
     },
     {
       "id": "8",
       "name": "Veg Sandwich",
       "details": "Single",
       "category": "Snacks & Munchies",
-      "price": 90
+      "price": 90,
+      "image": "images/Veg Sandwich.jpg"
     },
     {
       "id": "9",
       "name": "Banana Muffin",
       "details": "Piece",
       "category": "Snacks & Munchies",
-      "price": 100
+      "price": 100,
+      "image": "images/Banana Muffin.jpg"
+    },
+    {
+      "id": "34e9",
+      "name": "Masala Chai",
+      "details": "300ml",
+      "category": "Tea Selection",
+      "price": 40,
+      "image": "images/Masala Chai.jpg"
+    },
+    {
+      "id": "123e",
+      "name": "Green Tea",
+      "details": "300ml",
+      "category": "Tea Selection",
+      "price": 50,
+      "image": "images/Green Tea.jpg"
+    },
+    {
+      "id": "d45f",
+      "name": "Lemon Tea",
+      "details": "300ml",
+      "category": "Tea Selection",
+      "price": 60,
+      "image": "images/Iced Lemon Tea.jpg"
+    },
+    {
+      "id": "4657",
+      "name": "Iced Lemon Tea",
+      "details": "300ml",
+      "category": "Tea Selection",
+      "price": 80,
+      "image": "images/Iced Lemon Tea.jpg"
+    },
+    {
+      "id": "df86",
+      "name": "Herbal Tea",
+      "details": "300ml",
+      "category": "Tea Selection",
+      "price": 90,
+      "image": "images/Herbal Tea.jpg"
+    },
+    {
+      "id": "40d9",
+      "name": "Chocolate Muffin",
+      "details": "Choco chips",
+      "category": "Snacks & Munchies",
+      "price": 110,
+      "image": "images/Chocolate Muffin.jpg"
+    },
+    {
+      "id": "fc32",
+      "name": "Donut",
+      "details": "Sugar-glazed",
+      "category": "Snacks & Munchies",
+      "price": 90,
+      "image": "images/Donut.jpg"
+    },
+    {
+      "id": "b0c4",
+      "name": "Croissant",
+      "details": "Butter croissant",
+      "category": "Snacks & Munchies",
+      "price": 70,
+      "image": "images/Croissant.jpg"
+    },
+    {
+      "id": "10f7",
+      "name": "Veg Sandwich",
+      "details": "Fresh veggies & sauces",
+      "category": "Sandwiches & Quick Bites",
+      "price": 90,
+      "image": "images/Veg Sandwich.jpg"
+    },
+    {
+      "id": "f3c3",
+      "name": "Grilled Cheese Sandwich",
+      "details": "Cheese & herbs",
+      "category": "Sandwiches & Quick Bites",
+      "price": 110,
+      "image": "images/Grilled Cheese Sandwich.jpg"
+    },
+    {
+      "id": "1ec8",
+      "name": "Paneer Tikka Sandwich",
+      "details": "Spicy paneer filling",
+      "category": "Sandwiches & Quick Bites",
+      "price": 140,
+      "image": "images/Paneer Tikka Sandwich.jpg"
+    },
+    {
+      "id": "9a71",
+      "name": "Veg Wrap",
+      "details": "Fresh crunchy wrap",
+      "category": "Sandwiches & Quick Bites",
+      "price": 120,
+      "image": "images/Veg Wrap.jpg"
+    },
+    {
+      "id": "68b8",
+      "name": "French Fries",
+      "details": "Classic crispy",
+      "category": "Sandwiches & Quick Bites",
+      "price": 80,
+      "image": "images/French Fries.jpg"
+    },
+    {
+      "id": "652d",
+      "name": "Chocolate Lava Cake",
+      "details": "Hot gooey center",
+      "category": "🍨 Desserts",
+      "price": 120,
+      "image": "images/Ice Cream Scoop.jpg"
+    },
+    {
+      "id": "88c6",
+      "name": "Ice Cream Scoop",
+      "details": "Vanilla/Chocolate",
+      "category": "🍨 Desserts",
+      "price": 50,
+      "image": "images/Ice Cream Scoop.jpg"
+    },
+    {
+      "id": "0148",
+      "name": "Fruit Bowl",
+      "details": "Seasonal fruits",
+      "category": "🍨 Desserts",
+      "price": 70,
+      "image": "images/Fruit Bowl.jpg"
+    },
+    {
+      "id": "f86a",
+      "name": "Mango Smoothie",
+      "details": "300ml",
+      "category": "🥤 Smoothies & Shakes",
+      "price": 150,
+      "image": "images/Mango Smoothie.jpg"
+    },
+    {
+      "id": "662c",
+      "name": "Berry Smoothie",
+      "details": "300ml",
+      "category": "🥤 Smoothies & Shakes",
+      "price": 170,
+      "image": "images/Berry Smoothie.jpg"
+    },
+    {
+      "id": "98fe",
+      "name": "Chocolate Shake",
+      "details": "350ml",
+      "category": "🥤 Smoothies & Shakes",
+      "price": 160,
+      "image": "images/Chocolate Shake.jpg"
+    },
+    {
+      "id": "cf05",
+      "name": "Oreo Shake",
+      "details": "350ml",
+      "category": "🥤 Smoothies & Shakes",
+      "price": 170,
+      "image": "images/Oreo Shake.jpg"
+    },
+    {
+      "id": "6454",
+      "name": "Iced Mocha",
+      "details": "300ml",
+      "category": "Cold Coffee",
+      "price": 160,
+      "image": "images/Iced Mocha.jpg"
+    },
+    {
+      "id": "8445",
+      "name": "Frappe",
+      "details": "350ml",
+      "category": "Cold Coffee",
+      "price": 170,
+      "image": "images/Frappe.jpg"
+    },
+    {
+      "id": "436e",
+      "name": "Vanilla Cold Coffee",
+      "details": "300ml",
+      "category": "Cold Coffee",
+      "price": 160,
+      "image": "images/Vanilla Cold Coffee.jpg"
+    },
+    {
+      "id": "a109",
+      "name": "Americano",
+      "details": "150ml",
+      "category": "Coffee & Beverages",
+      "price": 110,
+      "image": "images/Americano.jpg"
+    },
+    {
+      "id": "d2cd",
+      "name": "Caramel Latte",
+      "details": "150ml",
+      "category": "Coffee & Beverages",
+      "price": 150,
+      "image": "images/Caramel Latte.jpg"
+    },
+    {
+      "id": "8395",
+      "name": "Flat White",
+      "details": "150ml",
+      "category": "Coffee & Beverages",
+      "price": 140,
+      "image": "images/Flat White.jpg"
     }
   ],
   "sales": [],
